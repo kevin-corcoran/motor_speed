@@ -12,9 +12,6 @@ public:
 
   void loop() {
     analogWrite(pin_, speedToVolt(speed_));
-    // if (/* condition */) {
-    //   /* slowDown */
-    // }
   }
 
   /* "Getter" returns speed */
@@ -29,7 +26,7 @@ public:
   void setSpeed(int speed) {
     if (speed > speed_) {
       slowDown(speed);
-    } else if (speed > speed_) {
+    } else if (speed < speed_) {
       speedUp(speed);
     } // else do nothing
   }
@@ -41,30 +38,29 @@ public:
 private:
   int pin_;
   int speed_;
-  // 255 might be too fast. Should be determined experimentally.
-  int max_volt_;
+  int max_volt_; // 255 might be too fast. Should be determined experimentally
 
   int speedToVolt(int speed) {
     return map(speed, 0, 9, 0, max_volt_);
   }
 
   void speedUp(int target_speed) {
-    // int volt = speedToVolt(speed_); // 0 - 255
+    int volt = speedToVolt(speed_); // 0 - 255
     int target_volt = speedToVolt(target_speed);
-    // for (int v = volt; v < target_volt; v += 10) {
-    //   analogWrite(pin_, v);
-    // }
+    for (int v = volt; v < target_volt; v += 1) {
+      analogWrite(pin_, v);
+    }
     analogWrite(pin_, target_volt);
 
     speed_ = target_speed;
   }
 
   void slowDown(int target_speed) {
-    // int volt = speedToVolt(speed_); // 0 - 255
+    int volt = speedToVolt(speed_); // 0 - 255
     int target_volt = speedToVolt(target_speed);
-    // for (int v = volt; v > target_volt; v -= 10) {
-    //   analogWrite(pin_, v);
-    // }
+    for (int v = volt; v > target_volt; v -= 1) {
+      analogWrite(pin_, v);
+    }
     analogWrite(pin_, target_volt);
 
     speed_ = target_speed;
